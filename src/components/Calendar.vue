@@ -48,7 +48,11 @@ export default {
       return new Date(year, month, 0).getDate() + 1;
     },
     date(weekIndex, dayIndex) {
-      return dayIndex + (this.days.length * weekIndex);
+      let date =  dayIndex + (this.days.length * weekIndex);
+      if (date > 0 && date <= this.monthInDates(this.currentMonth, this.currentYear)) {
+        return date;
+      }
+      return 'other';
     },
   }
 }
