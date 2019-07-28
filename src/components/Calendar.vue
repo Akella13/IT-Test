@@ -11,6 +11,9 @@
           <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day">
             <span v-if="week == 1">{{ day }}</span>
             {{ date(weekIndex, dayIndex) }}
+            <span v-if="date(weekIndex, dayIndex) == currentDate">
+              TODAY
+            </span>
           </div>
         </div>
       </div>
@@ -35,11 +38,10 @@ export default {
     currentMonth() { return this.today.getMonth() },
     currentDay() { return this.today.getDay() },
     currentDate() { return this.today.getDate() },
+    currentWeek() { return Math.floor(this.currentDate/this.days.length) }
   },
   mounted() {
-    // console.log(this.monthInDates(this.currentMonth, this.currentYear))
-    // console.log(this.days[this.currentDay])
-    // console.log(this.monthInWeeks(this.currentMonth, this.currentYear))
+    
   },
   methods: {
     monthInDates (month, year) {
