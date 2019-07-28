@@ -52,10 +52,16 @@ export default {
       date: this.today.getDate(),
       week: Math.floor(this.today.getDate()/this.days.length),
     });
-    this.$set(this, 'selected', this.current);
+    this.$set(this, 'selected', {
+      year: this.today.getFullYear(),
+      month: this.today.getMonth(),
+      day: this.today.getDay(),
+      date: this.today.getDate(),
+      week: Math.floor(this.today.getDate()/this.days.length),
+    });
   },
   mounted() {
-    
+    console.log(this.current === this.selected)
   },
   methods: {
     monthInDates (month, year) {
