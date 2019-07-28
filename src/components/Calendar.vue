@@ -1,9 +1,9 @@
 <template>
   <div>
     <section>
-      <button>prev</button>
-      <span>{{ months[currentMonth] }} {{ currentYear }}</span>
-      <button>next</button>
+      <button type="button" @click="prethisonth">prev</button>
+      <span>{{ months[selected] }} {{ current.year }}</span>
+      <button type="button" @click="nextMonth">next</button>
     </section>
     <section>
       <div class="container">
@@ -11,7 +11,7 @@
           <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day">
             <span v-if="week == 1">{{ day }}</span>
             {{ date(weekIndex, dayIndex) }}
-            <span v-if="date(weekIndex, dayIndex) == currentDate">
+            <span v-if="date(weekIndex, dayIndex) == current.date">
               TODAY
             </span>
           </div>
@@ -28,17 +28,21 @@ export default {
     return {
       today: new Date(),
       years: [],
-      months: ['Feb', 'Jan', 'March', 'April', 'May', 'June', 'Jule', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      months: ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'Jule', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       weeks: 5,
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      selected: 0,
+      current: {},
     };
   },
-  computed: {
-    currentYear() { return this.today.getFullYear() },
-    currentMonth() { return this.today.getMonth() },
-    currentDay() { return this.today.getDay() },
-    currentDate() { return this.today.getDate() },
-    currentWeek() { return Math.floor(this.currentDate/this.days.length) }
+  created() {
+    this.$set(this, 'current', {
+      year: this.today.getFullYear(),
+      month: this.today.getMonth(),
+      day: this.today.getDay(),
+      date: this.today.getDate(),
+      week: Math.floor(this.today.getDate()/this.days.length),
+    })
   },
   mounted() {
     
@@ -49,11 +53,17 @@ export default {
     },
     date(weekIndex, dayIndex) {
       let date =  dayIndex + (this.days.length * weekIndex);
-      if (date > 0 && date <= this.monthInDates(this.currentMonth, this.currentYear)) {
+      if (date > 0 && date <= this.monthInDates(this.current.month, this.current.year)) {
         return date;
       }
       return 'other';
     },
+    prethisonth() {
+      this.selected -= 1;
+    },
+    nextMonth() {
+      this.selected += 1;
+    }
   }
 }
 </script>
