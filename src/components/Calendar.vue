@@ -2,7 +2,7 @@
   <div>
     <section>
       <button>prev</button>
-      <span>{{ currentMonth }} {{ currentYear }}</span>
+      <span>{{ months[currentMonth] }} {{ currentYear }}</span>
       <button>next</button>
     </section>
     <section>
@@ -10,6 +10,7 @@
         <div v-for="(week, weekIndex) in weeks" :key="weekIndex" class="row">
           <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day">
             <span v-if="week == 1">{{ day }}</span>
+            {{ date(weekIndex, dayIndex) }}
           </div>
         </div>
       </div>
@@ -25,9 +26,8 @@ export default {
       today: new Date(),
       years: [],
       months: ['Feb', 'Jan', 'March', 'April', 'May', 'June', 'Jule', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      weeks: 5,
-      days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      date: 31,
+      weeks: 4,
+      days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     };
   },
   computed: {
@@ -37,11 +37,17 @@ export default {
     currentDate() { return this.today.getDate() },
   },
   mounted() {
-    console.log(this.monthLength(this.currentMonth, this.currentYear))
+    // console.log(this.monthInDates(this.currentMonth, this.currentYear))
+    // console.log(this.days[this.currentDay])
+    // console.log(this.monthInWeeks(this.currentMonth, this.currentYear))
   },
   methods: {
-    monthLength (month, year) {
+    monthInDates (month, year) {
       return new Date(year, month, 0).getDate() + 1;
+    },
+    date(weekIndex, dayIndex) {
+      let date = (this.monthInDates(this.currentMonth, this.currentYear) - dayIndex - 7*weekIndex);
+      return date;
     },
   }
 }
