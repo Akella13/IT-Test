@@ -39,6 +39,10 @@ export default {
     selectedLength() {
       return this.monthInDates(this.selected.month, this.selected.year);
     },
+    selectedStartDay() {
+      let selectedStart =  new Date(this.selected.year, this.selected.month);
+      return selectedStart.getDay();
+    }
   },
   created() {
     this.$set(this, 'current', {
@@ -58,7 +62,7 @@ export default {
       return new Date(year, month + 1, 0).getDate();
     },
     date(weekIndex, dayIndex) {
-      let date =  dayIndex + (this.days.length * weekIndex);
+      let date = -this.selectedStartDay + 1 + dayIndex + (this.days.length * weekIndex);
       if (date > 0 && date <= this.selectedLength) {
         return date;
       }
