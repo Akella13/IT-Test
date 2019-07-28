@@ -26,7 +26,7 @@ export default {
       today: new Date(),
       years: [],
       months: ['Feb', 'Jan', 'March', 'April', 'May', 'June', 'Jule', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      weeks: 4,
+      weeks: 5,
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     };
   },
@@ -46,8 +46,7 @@ export default {
       return new Date(year, month, 0).getDate() + 1;
     },
     date(weekIndex, dayIndex) {
-      let date = (this.monthInDates(this.currentMonth, this.currentYear) - dayIndex - 7*weekIndex);
-      return date;
+      return dayIndex + (this.days.length * weekIndex);
     },
   }
 }
