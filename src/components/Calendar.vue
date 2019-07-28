@@ -35,6 +35,11 @@ export default {
       current: {},
     };
   },
+  computed: {
+    selectedLength() {
+      return this.monthInDates(this.selected.month, this.selected.year);
+    },
+  },
   created() {
     this.$set(this, 'current', {
       year: this.today.getFullYear(),
@@ -50,11 +55,11 @@ export default {
   },
   methods: {
     monthInDates (month, year) {
-      return new Date(year, month, 0).getDate() + 1;
+      return new Date(year, month + 1, 0).getDate();
     },
     date(weekIndex, dayIndex) {
       let date =  dayIndex + (this.days.length * weekIndex);
-      if (date > 0 && date <= this.monthInDates(this.current.month, this.current.year)) {
+      if (date > 0 && date <= this.selectedLength) {
         return date;
       }
       return '-';
