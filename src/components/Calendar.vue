@@ -39,10 +39,16 @@ export default {
     selectedLength() {
       return this.monthInDates(this.selected.month, this.selected.year);
     },
+    prevLength() {
+      if (this.selected.month <= 0) {
+        return this.monthInDates(this.months.length, this.selected.year - 1);
+      }
+      return this.monthInDates(this.selected.month - 1, this.selected.year);
+    },
     selectedStartDay() {
-      let selectedStart =  new Date(this.selected.year, this.selected.month);
+      let selectedStart = new Date(this.selected.year, this.selected.month);
       return selectedStart.getDay();
-    }
+    },
   },
   created() {
     this.$set(this, 'current', {
@@ -60,19 +66,18 @@ export default {
       week: Math.floor(this.today.getDate()/this.days.length),
     });
   },
-  mounted() {
-    console.log(this.current === this.selected)
-  },
   methods: {
     monthInDates (month, year) {
       return new Date(year, month + 1, 0).getDate();
     },
     date(weekIndex, dayIndex) {
       let date = -this.selectedStartDay + 1 + dayIndex + (this.days.length * weekIndex);
-      if (date > 0 && date <= this.selectedLength) {
-        return date;
+      if (date <= 0) {
+        return this.prevLength + date;
+      } else if (date > this.selectedLength) {
+        return date - this.selectedLength;
       }
-      return '-';
+      return date;
     },
     prevMonth() {
       if (this.selected.month <= 0) {
