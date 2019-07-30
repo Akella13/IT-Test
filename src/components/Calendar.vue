@@ -8,7 +8,7 @@
     <section>
       <div class="container">
         <div v-for="(week, weekIndex) in weeks" :key="weekIndex" class="row">
-          <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day">
+          <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day" @click="createEvent(weekIndex, dayIndex)">
             <span v-if="week == 1">{{ day }}</span>
             {{ date(weekIndex, dayIndex) }}
             <span v-if="isToday(weekIndex, dayIndex)">
@@ -17,6 +17,10 @@
           </div>
         </div>
       </div>
+      <input type="text" v-model="eventType">
+      <ul>
+        <li v-for="(event, index) in events" :key="index">{{ event }}</li>
+      </ul>
     </section>
   </div>
 </template>
@@ -33,6 +37,8 @@ export default {
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       selected: {},
       current: {},
+      events: [],
+      eventType: '',
     };
   },
   computed: {
@@ -102,6 +108,9 @@ export default {
         this.selected.month == this.current.month &&
         weekIndex == this.current.week
       )
+    },
+    createEvent(weekIndex, dayIndex) {
+      this.events.push({ month: this.selected.month, date: this.date(weekIndex, dayIndex), type: this.eventType })
     },
   }
 }
