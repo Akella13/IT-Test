@@ -11,7 +11,7 @@
           <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day">
             <span v-if="week == 1">{{ day }}</span>
             {{ date(weekIndex, dayIndex) }}
-            <span v-if="date(weekIndex, dayIndex) == current.date">
+            <span v-if="isToday(weekIndex, dayIndex)">
               TODAY
             </span>
           </div>
@@ -94,7 +94,15 @@ export default {
       } else {
         this.selected.month += 1;
       }
-    }
+    },
+    isToday(weekIndex, dayIndex) {
+      return (
+        this.date(weekIndex, dayIndex) == this.current.date &&
+        this.selected.year == this.current.year &&
+        this.selected.month == this.current.month &&
+        weekIndex == this.current.week
+      )
+    },
   }
 }
 </script>
@@ -104,5 +112,6 @@ export default {
     border: 1px solid #ccc;
     text-align: center;
     padding: 1rem;
+    overflow-wrap: anywhere;
   }
 </style>
