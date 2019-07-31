@@ -10,7 +10,7 @@
         <div v-for="(week, weekIndex) in weeks" :key="weekIndex" class="row">
           <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day" @click="createEvent(weekIndex, dayIndex)">
             <span v-if="week == 1">{{ day }}</span>
-            {{ date(weekIndex, dayIndex) }}
+            {{ date(weekIndex, dayIndex).date }}
             <span v-if="isToday(weekIndex, dayIndex)">
               TODAY
             </span>
@@ -79,22 +79,22 @@ export default {
     date(weekIndex, dayIndex) {
       let date = -this.selectedStartDay + 1 + dayIndex + (this.days.length * weekIndex);
       if (date <= 0) {
-        return this.prevLength + date;
+        return { date: this.prevLength + date, month: this.selected.month - 1 };
       } else if (date > this.selectedLength) {
-        return date - this.selectedLength;
+        return { date: date - this.selectedLength, month: this.selected.month + 1 };
       }
-      return date;
+      return { date: date, month: this.selected.month };
     },
     prevMonth() {
       if (this.selected.month <= 0) {
         this.selected.year -= 1;
-        this.selected.month = 11;
+        this.selected.month = this.months.length - 1;
       } else {
         this.selected.month -= 1;
       }
     },
     nextMonth() {
-      if (this.selected.month >=11) {
+      if (this.selected.month >= this.months.length - 1) {
         this.selected.year += 1;
         this.selected.month = 0;
       } else {
@@ -103,14 +103,26 @@ export default {
     },
     isToday(weekIndex, dayIndex) {
       return (
-        this.date(weekIndex, dayIndex) == this.current.date &&
+        this.date(weekIndex, dayIndex).date == this.current.date &&
         this.selected.year == this.current.year &&
         this.selected.month == this.current.month &&
         weekIndex == this.current.week
       )
     },
     createEvent(weekIndex, dayIndex) {
-      this.events.push({ month: this.selected.month, date: this.date(weekIndex, dayIndex), type: this.eventType })
+      if (this.date(weekIndex, dayIndex).month < this.selected.month) {
+        this.prevMonth();
+        return;
+      } else if (this.date(weekIndex, dayIndex).month > this.selected.month) {
+        this.nextMonth();
+        return;
+      }
+      this.events.push({
+        month: this.date(weekIndex, dayIndex).month,
+        date: this.date(weekIndex, dayIndex).date,
+        type: this.eventType,
+      });
+      this.eventType = '';
     },
   }
 }
