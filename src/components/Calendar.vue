@@ -8,7 +8,7 @@
     <section>
       <div class="container">
         <div v-for="(week, weekIndex) in weeks" :key="weekIndex" class="row">
-          <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day" @click="createEvent(weekIndex, dayIndex)">
+          <div v-for="(day, dayIndex) in days" :key="dayIndex" class="col day" @click="showEvents(weekIndex, dayIndex)">
             <span v-if="week == 1">{{ day }}</span>
             {{ date(weekIndex, dayIndex).date }}
             <span v-if="isToday(weekIndex, dayIndex)">
@@ -37,7 +37,10 @@ export default {
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       selected: {},
       current: {},
-      events: [],
+      events: [
+        { month : 7, date : 12, year: 2019, type : "event1"},
+        { month : 7, date : 22, year: 2019, type : "event2"}
+      ],
       eventType: '',
     };
   },
@@ -79,11 +82,23 @@ export default {
     date(weekIndex, dayIndex) {
       let date = -this.selectedStartDay + 1 + dayIndex + (this.days.length * weekIndex);
       if (date <= 0) {
-        return { date: this.prevLength + date, month: this.selected.month - 1 };
+        return {
+          date: this.prevLength + date,
+          month: this.selected.month - 1,
+          year: this.selected.year,
+        };
       } else if (date > this.selectedLength) {
-        return { date: date - this.selectedLength, month: this.selected.month + 1 };
+        return {
+          date: date - this.selectedLength,
+          month: this.selected.month + 1,
+          year: this.selected.year,
+        };
       }
-      return { date: date, month: this.selected.month };
+      return {
+        date: date,
+        month: this.selected.month,
+        year: this.selected.year
+      };
     },
     prevMonth() {
       if (this.selected.month <= 0) {
@@ -118,11 +133,26 @@ export default {
         return;
       }
       this.events.push({
-        month: this.date(weekIndex, dayIndex).month,
         date: this.date(weekIndex, dayIndex).date,
+        month: this.date(weekIndex, dayIndex).month,
+        year: this.date(weekIndex, dayIndex).year,
         type: this.eventType,
       });
       this.eventType = '';
+    },
+    showEvents(weekIndex, dayIndex) {
+      if (this.eventExists(weekIndex, dayIndex)) {
+        console.log(this.events)
+      } else {
+        this.createEvent(weekIndex, dayIndex)
+      }
+    },
+    eventExists(weekIndex, dayIndex) {
+      return this.events.some((event) => (
+        event.month == this.selected.month &&
+        event.date == this.date(weekIndex, dayIndex).date &&
+        event.year == this.date(weekIndex, dayIndex).year
+      ))
     },
   }
 }
