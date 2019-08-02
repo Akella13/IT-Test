@@ -18,8 +18,12 @@
         </div>
       </div>
     </section>
-    <section>
-      <input type="text" v-model="eventType">
+    <section class="popup" :class="{ 'displayed': displayed }">
+      <button type="button" @click="displayed = false">cancel</button>
+      <form @submit.prevent="createEvent">
+        <input type="text" v-model="eventType">
+        <button type="submit">Submit</button>
+      </form>
       <ul>
         <li v-for="(event, index) in events" :key="index">{{ event }}</li>
       </ul>
@@ -40,10 +44,11 @@ export default {
       selected: {},
       current: {},
       events: [
-        { month : 7, date : 12, year: 2019, type : "event1"},
-        { month : 7, date : 22, year: 2019, type : "event2"}
+        { date : 12, month : 7, year: 2019, type : "event1"},
+        { date : 22, month : 7, year: 2019, type : "event2"}
       ],
       eventType: '',
+      displayed: false,
     };
   },
   computed: {
@@ -126,7 +131,17 @@ export default {
         weekIndex == this.current.week
       )
     },
-    createEvent(weekIndex, dayIndex) {
+    createEvent() {
+      this.events.push({
+        date: this.selected.date,
+        month: this.selected.month,
+        year: this.selected.year,
+        type: this.eventType,
+      });
+      this.eventType = '';
+    },
+    showEvents(weekIndex, dayIndex) {
+      // bug: doesn't show on consecutive clicks
       if (this.date(weekIndex, dayIndex).month < this.selected.month) {
         this.prevMonth();
         return;
@@ -134,30 +149,10 @@ export default {
         this.nextMonth();
         return;
       }
-      this.events.push({
-        date: this.date(weekIndex, dayIndex).date,
-        month: this.date(weekIndex, dayIndex).month,
-        year: this.date(weekIndex, dayIndex).year,
-        type: this.eventType,
-      });
-      this.eventType = '';
-    },
-    showEvents(weekIndex, dayIndex) {
-      // if (this.eventExists(weekIndex, dayIndex)) {
-      //   this.events.forEach((event) => {
-      //     console.log(event)
-      //   })
-      // } else {
-      //   this.createEvent(weekIndex, dayIndex)
-      // }
-      console.log(this.dateEvents(weekIndex, dayIndex))
-    },
-    eventExists(weekIndex, dayIndex) {
-      return this.events.some((event) => (
-        event.month == this.selected.month &&
-        event.date == this.date(weekIndex, dayIndex).date &&
-        event.year == this.date(weekIndex, dayIndex).year
-      ))
+      this.selected.date = this.date(weekIndex, dayIndex).date;
+      this.selected.day = dayIndex;
+      this.selected.week = weekIndex;
+      this.displayed = true;
     },
     dateEvents(weekIndex, dayIndex) {
       return this.events.filter((event) => {        
@@ -174,5 +169,13 @@ export default {
     text-align: center;
     padding: 1rem;
     overflow-wrap: anywhere;
+  }
+
+  .popup {
+    display: none;
+
+    &.displayed {
+      display: block;
+    }
   }
 </style>
