@@ -17,6 +17,8 @@
           </div>
         </div>
       </div>
+    </section>
+    <section>
       <input type="text" v-model="eventType">
       <ul>
         <li v-for="(event, index) in events" :key="index">{{ event }}</li>
@@ -141,11 +143,14 @@ export default {
       this.eventType = '';
     },
     showEvents(weekIndex, dayIndex) {
-      if (this.eventExists(weekIndex, dayIndex)) {
-        console.log(this.events)
-      } else {
-        this.createEvent(weekIndex, dayIndex)
-      }
+      // if (this.eventExists(weekIndex, dayIndex)) {
+      //   this.events.forEach((event) => {
+      //     console.log(event)
+      //   })
+      // } else {
+      //   this.createEvent(weekIndex, dayIndex)
+      // }
+      console.log(this.dateEvents(weekIndex, dayIndex))
     },
     eventExists(weekIndex, dayIndex) {
       return this.events.some((event) => (
@@ -154,6 +159,11 @@ export default {
         event.year == this.date(weekIndex, dayIndex).year
       ))
     },
+    dateEvents(weekIndex, dayIndex) {
+      return this.events.filter((event) => {        
+        return event.date == this.date(weekIndex, dayIndex).date 
+      })
+    }
   }
 }
 </script>
